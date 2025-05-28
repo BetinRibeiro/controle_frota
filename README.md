@@ -82,6 +82,14 @@ Este sistema permite o cadastro, busca, exibição e gerenciamento de veículos 
 - Melhoria na exportação de relatórios (ex: PDF)  
 - Integração com APIs externas para dados adicionais  
 
+...
+
+
+## Preview do Relatório
+
+![Preview do Relatório](https://github.com/BetinRibeiro/controle_frota/blob/main/assets/icons/preview.png?raw=true)
+
+
 ---
 
 ## Autor
