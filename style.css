@@ -1,0 +1,17 @@
+ .tab-content {
+     display: none;
+ }
+
+ .tab-content.active {
+     display: block;
+ }
+
+ .tab-button.active {
+     background-color: #3b82f6;
+     color: white;
+ }
+
+ .pagination-btn.active {
+     background-color: #3b82f6;
+     color: white;
+ }

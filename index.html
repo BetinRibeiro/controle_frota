@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Frota</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/icons/ico.ico">
+    <link rel="icon" type="image/png" href="assets/icons/ico.png">
+    <link rel="apple-touch-icon" href="assets/icons/ico.png">
+
+            <!-- Título que aparece no link -->
+        <meta property="og:title" content="Controle de Frota">
+
+        <!-- Descrição abaixo do título -->
+        <meta property="og:description" content="Sistema para gerenciar veículos, abastecimentos e relatórios de frotas.">
+
+        <!-- URL do link -->
+        <meta property="og:url" content="https://betinribeiro.github.io/controle_frota/">
+
+        <!-- Imagem exibida no link (de preferência 1200x630px) -->
+        <meta property="og:image" content="https://betinribeiro.github.io/controle_frota/assets/icons/preview.png">
+
+        <!-- Tipo do conteúdo -->
+        <meta property="og:type" content="website">
+
+        <!-- Twitter Card (opcional, mas recomendado) -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Controle de Frota">
+        <meta name="twitter:description" content="Sistema para gerenciar veículos, abastecimentos e relatórios de frotas.">
+        <meta name="twitter:image" content="https://betinribeiro.github.io/controle_frota/assets/icons/preview.png">
+
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4 max-w-6xl">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 rounded-lg mb-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-800">
+                <i class="fas fa-car mr-2"></i> Gestão de Frota
+            </h1>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center">
+                    <!-- <img src="https://via.placeholder.com/40" alt="User" class="rounded-full h-8 w-8"> -->
+                    <!-- <span class="ml-2 text-gray-700">Admin</span> -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-gray-500 font-medium">Total de Veículos</h3>
+                <p id="total-veiculos" class="text-2xl font-bold text-blue-600">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-gray-500 font-medium">Abastecimentos (Mês)</h3>
+                <p id="total-abastecimentos-mes" class="text-2xl font-bold text-green-600">0 L</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-gray-500 font-medium">Gasto Total (Mês)</h3>
+                <p id="gasto-total-mes" class="text-2xl font-bold text-red-600">R$ 0,00</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-gray-500 font-medium">Média de Consumo</h3>
+                <p id="media-consumo" class="text-2xl font-bold text-purple-600">0 km/L</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-white shadow-sm rounded-lg mb-6">
+            <div class="flex border-b">
+                <button class="tab-button active px-4 py-3 font-medium" data-tab="veiculos">
+                    <i class="fas fa-car mr-2"></i> Veículos
+                </button>
+                <button class="tab-button px-4 py-3 font-medium" data-tab="abastecimentos">
+                    <i class="fas fa-gas-pump mr-2"></i> Abastecimentos
+                </button>
+                <button class="tab-button px-4 py-3 font-medium" data-tab="relatorios">
+                    <i class="fas fa-chart-bar mr-2"></i> Relatórios
+                </button>
+            </div>
+
+            <!-- Veículos Tab -->
+            <div id="veiculos" class="tab-content active p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Cadastro de Veículos</h3>
+                    <div class="flex space-x-2">
+                        <div class="relative">
+                            <input type="text" id="search-veiculo" placeholder="Buscar veículo..." class="pl-8 pr-4 py-2 border rounded">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button id="novo-veiculo-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            <i class="fas fa-plus mr-2"></i> Novo Veículo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Veículo Form -->
+                <div id="veiculo-form-container" class="bg-gray-50 p-4 rounded-lg mb-4 hidden">
+                    <form id="veiculo-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="veiculo-id">
+                        <div>
+                            <label for="placa" class="block text-sm font-medium mb-1">Placa *</label>
+                            <input type="text" id="placa" class="w-full p-2 border rounded" required placeholder="Ex: ABC1D23">
+                        </div>
+                        <div>
+                            <label for="modelo" class="block text-sm font-medium mb-1">Modelo *</label>
+                            <input type="text" id="modelo" class="w-full p-2 border rounded" required placeholder="Ex: Corolla">
+                        </div>
+                        <div>
+                            <label for="marca" class="block text-sm font-medium mb-1">Marca *</label>
+                            <select id="marca" class="w-full p-2 border rounded" required>
+                                <option value="">Selecione</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Volkswagen">Volkswagen</option>
+                                <option value="Fiat">Fiat</option>
+                                <option value="Chevrolet">Chevrolet</option>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Ford">Ford</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Renault">Renault</option>
+                                <option value="Jeep">Jeep</option>
+                                <option value="Nissan">Nissan</option>
+                                <option value="Outra">Outra</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tipo" class="block text-sm font-medium mb-1">Tipo *</label>
+                            <select id="tipo" class="w-full p-2 border rounded" required>
+                                <option value="">Selecione</option>
+                                <option value="carro">Carro</option>
+                                <option value="caminhao">Caminhão</option>
+                                <option value="moto">Moto</option>
+                                <option value="van">Van</option>
+                                <option value="onibus">Ônibus</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="km" class="block text-sm font-medium mb-1">KM Atual *</label>
+                            <input type="number" id="km" class="w-full p-2 border rounded" required placeholder="Ex: 15000">
+                        </div>
+                        <div>
+                            <label for="situacao" class="block text-sm font-medium mb-1">Situação *</label>
+                            <select id="situacao" class="w-full p-2 border rounded" required>
+                                <option value="ativo">Ativo</option>
+                                <option value="manutencao">Manutenção</option>
+                                <option value="inativo">Inativo</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end space-x-2">
+                            <button type="button" id="cancelar-veiculo" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                                Salvar
+                            </button>
+                            
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Veículos Table -->
+                <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3 text-left">Placa</th>
+                                <th class="p-3 text-left">Modelo</th>
+                                <th class="p-3 text-left">Marca</th>
+                                <th class="p-3 text-left">KM</th>
+                                <th class="p-3 text-left">Situação</th>
+                                <th class="p-3 text-left">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="veiculos-table">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="veiculos-pagination" class="flex justify-center mt-4 space-x-2 hidden">
+                    <button class="pagination-btn px-3 py-1 border rounded" data-page="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="veiculos-pages" class="flex space-x-1"></div>
+                    <button class="pagination-btn px-3 py-1 border rounded" data-page="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Abastecimentos Tab -->
+            <div id="abastecimentos" class="tab-content p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">Registro de Abastecimentos</h3>
+                    <div class="flex space-x-2">
+                        <div class="relative">
+                            <input type="text" id="search-abastecimento" placeholder="Buscar abastecimento..." class="pl-8 pr-4 py-2 border rounded">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        <button id="novo-abastecimento-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            <i class="fas fa-plus mr-2"></i> Novo Abastecimento
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Abastecimento Form -->
+                <div id="abastecimento-form-container" class="bg-gray-50 p-4 rounded-lg mb-4 hidden">
+                    <form id="abastecimento-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="abastecimento-id">
+                        <div>
+                            <label for="data" class="block text-sm font-medium mb-1">Data *</label>
+                            <input type="date" id="data" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div>
+                            <label for="veiculo" class="block text-sm font-medium mb-1">Veículo *</label>
+                            <select id="veiculo" class="w-full p-2 border rounded" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="litros" class="block text-sm font-medium mb-1">Litros *</label>
+                            <input type="number" step="0.01" id="litros" class="w-full p-2 border rounded" required placeholder="Ex: 45.5">
+                        </div>
+                        <div>
+                            <label for="valor" class="block text-sm font-medium mb-1">Valor (R$) *</label>
+                            <input type="number" step="0.01" id="valor" class="w-full p-2 border rounded" required placeholder="Ex: 275.50">
+                        </div>
+                        <div>
+                            <label for="combustivel" class="block text-sm font-medium mb-1">Combustível *</label>
+                            <select id="combustivel" class="w-full p-2 border rounded" required>
+                                <option value="gasolina">Gasolina</option>
+                                <option value="diesel">Diesel</option>
+                                <option value="etanol">Etanol</option>
+                                <option value="gnv">GNV</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="km-atual" class="block text-sm font-medium mb-1">KM Atual *</label>
+                            <input type="number" id="km-atual" class="w-full p-2 border rounded" required placeholder="Ex: 15200">
+                        </div>
+                        <div class="md:col-span-2 flex justify-end space-x-2">
+                            <button type="button" id="cancelar-abastecimento" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                                Salver
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Abastecimentos Table -->
+                <div class="overflow-x-auto bg-white rounded-lg shadow">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3 text-left">Data</th>
+                                <th class="p-3 text-left">Veículo</th>
+                                <th class="p-3 text-left">Combustível</th>
+                                <th class="p-3 text-left">Litros</th>
+                                <th class="p-3 text-left">Valor</th>
+                                <th class="p-3 text-left">KM</th>
+                                <th class="p-3 text-left">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="abastecimentos-table">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="abastecimentos-pagination" class="flex justify-center mt-4 space-x-2 hidden">
+                    <button class="pagination-btn px-3 py-1 border rounded" data-page="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="abastecimentos-pages" class="flex space-x-1"></div>
+                    <button class="pagination-btn px-3 py-1 border rounded" data-page="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Relatórios Tab -->
+            <div id="relatorios" class="tab-content p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Relatório por Período -->
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-medium mb-3">Relatório por Período</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm mb-1">De:</label>
+                                <input type="date" id="relatorio-inicio" class="w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Até:</label>
+                                <input type="date" id="relatorio-fim" class="w-full p-2 border rounded">
+                            </div>
+                            <button id="gerar-relatorio" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+                                Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Relatório por Veículo -->
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-medium mb-3">Relatório por Veículo</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm mb-1">Veículo:</label>
+                                <select id="relatorio-veiculo" class="w-full p-2 border rounded">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            <button id="gerar-relatorio-veiculo" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+                                Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resultados do Relatório -->
+                <div id="relatorio-resultados" class="bg-white p-4 rounded-lg shadow hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="relatorio-titulo" class="font-medium"></h3>
+                        <button id="exportar-relatorio" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                            <i class="fas fa-download mr-1"></i> Exportar
+                        </button>
+                    </div>
+                    <div id="relatorio-conteudo">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
